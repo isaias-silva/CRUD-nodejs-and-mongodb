@@ -1,3 +1,4 @@
+//libs
 const express = require('express');
 const { mongoose, userSchema } = require('./connect');
 const server = express();
@@ -5,6 +6,7 @@ const bodyParser = require('body-parser')
 const port = process.env.PORT || 8080
 
 
+//header
 server.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*')
     res.header('Acess-Control-Allow-Headers', 'Origin,X-Requrested-With ,Content-Type, Accept,Autorization');
@@ -18,18 +20,23 @@ server.use((req, res, next) => {
     next();
 
 })
+//uso de json
 server.use(bodyParser.urlencoded({
     extended: true
 }));
-server.use(bodyParser.json()) **
-    server.get('/', (req, res) => {
+server.use(bodyParser.json())
+
+//index   
+server.get('/', (req, res) => {
         res.send('index')
     })
+//READ
 server.get('/users', async (req, res) => {
     const users = mongoose.model('users', userSchema, 'users')
     const docs = await users.find({}).lean().exec()
     res.send(docs)
 })
+//CREATE
 server.post('/insert', async (req, res) => {
     console.log(req.body)
     let username = req.body.username
@@ -44,6 +51,7 @@ server.post('/insert', async (req, res) => {
         res.send(err)
     }
 })
+//DELETE
 server.delete('/delete/:id', async (req, res) => {
     const users = mongoose.model('users', userSchema, 'users')
     const docs = await users.find({}).lean().exec()
@@ -57,7 +65,7 @@ server.delete('/delete/:id', async (req, res) => {
     }
     res.send('não encontrado')
 })
-
+//UPDATE
 server.put('/edit/:id', async (req, res) => {
 
     const { username, email } = req.body
